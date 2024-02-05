@@ -1,0 +1,19 @@
+<section class="main">
+  <div class="d-flex align-items-center">
+    <div class="flex-grow-1">
+      <h1 class="page-title">Cards Page</h1>
+      <p class="page-description">This is a craziest Angular course</p>
+    </div>
+    <button mat-stroked-button color="primary" (click)="openDialog()">
+      Primary
+    </button>
+  </div>
+  <hr />
+  <div class="cards">
+    <div class="row">
+      <div class="col-12 col-md-4 col-lg-3" *ngFor="let card of cards">
+        <app-card-item [card]="card"></app-card-item>
+      </div>
+    </div>
+  </div>
+</section>

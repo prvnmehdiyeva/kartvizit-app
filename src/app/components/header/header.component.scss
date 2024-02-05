@@ -1,0 +1,19 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+.navbar {
+  display: flex;
+  gap: 20px;
+  li {
+    a {
+      text-decoration: none;
+      color: white;
+      font-size: 15px;
+      opacity: 0.6;
+      &:hover,
+      &.active {
+        opacity: 1;
+      }
+    }
+  }
+}
