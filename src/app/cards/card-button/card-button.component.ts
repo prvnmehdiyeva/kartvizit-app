@@ -2,10 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CardService } from '../../services/card.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Card } from '../../models/card';
-import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { error } from 'console';
+import { SnackbarService } from '../../services/snackbar.service';
+import { LocalserviceService } from '../../services/localservice.service';
 
 @Component({
   selector: 'app-card-button',
@@ -14,18 +13,24 @@ import { error } from 'console';
 })
 export class CardButtonComponent implements OnInit {
   checkoutForm!: FormGroup;
-
+  showSpinner: boolean = false;
+  cards!: Card;
+  private idCounter: number = 1;
+  cardService: any;
   constructor(
     private dialogRef: MatDialogRef<CardButtonComponent>,
     private formBuilder: FormBuilder,
     private card: CardService,
-    private _snackBar: MatSnackBar,
+    private localService: LocalserviceService,
+    private snackBar: SnackbarService,
     @Inject(MAT_DIALOG_DATA) public data: Card
-  ) {}
+  ) {
+    this.idCounter = Number(localStorage.getItem('id')) || 1;
+  }
 
   ngOnInit(): void {
-    console.log(this.data);
     this.checkoutForm = this.formBuilder.group({
+      id: this.idCounter++,
       name: [this.data?.name, [Validators.required, Validators.maxLength(225)]],
       address: [this.data?.address, [Validators.maxLength(225)]],
       title: [this.data?.title, [Validators.maxLength(20)]],
@@ -36,44 +41,65 @@ export class CardButtonComponent implements OnInit {
       email: [this.data?.email, [Validators.email, Validators.maxLength(20)]],
     });
   }
+
   addCard() {
-    const newCard: Card = {
-      name: this.checkoutForm.value.name,
-      title: this.checkoutForm.value.title,
-      email: this.checkoutForm.value.email,
-      phone: this.checkoutForm.value.phone,
-      address: this.checkoutForm.value.address,
+    this.card.addCard(this.checkoutForm.value).subscribe(
+      () => {
+        this.getSuccess('Successfully added');
+      },
+      (err: any) => {
+        this.getError(err.message || 'Error');
+      }
+    );
+    localStorage.setItem('id', String(this.idCounter));
+  }
+
+  deleteCard(): void {
+    this.showSpinner = true;
+
+    const cardToDelete: any = this.data.id;
+
+    this.card.deleteCard(cardToDelete).subscribe(
+      () => {
+        this.getSuccess('Successfully deleted');
+      },
+      (err: any) => {
+        this.getError(err.message || 'Error');
+      }
+    );
+  }
+
+  updateCard(): void {
+    this.showSpinner = true;
+    const cardId: number = this.data.id;
+
+    const updatedCardData = {
+      id: cardId,
+      name: this.checkoutForm.get('name')?.value,
+      address: this.checkoutForm.get('address')?.value,
+      title: this.checkoutForm.get('title')?.value,
+      phone: this.checkoutForm.get('phone')?.value,
+      email: this.checkoutForm.get('email')?.value,
     };
-    this.card.addCard(newCard).subscribe(() => {
-      this.dialogRef.close(true);
-    });
+    const cardData = updatedCardData;
+
+    this.card.updateCard(cardData).subscribe(
+      () => {
+        this.getSuccess('Successfully updated');
+      },
+      (err: any) => {
+        this.getError(err.message || 'Error');
+      }
+    );
   }
 
-  updateCard() {
-    if (this.data && this.data.id !== undefined) {
-      this.card
-        .updateCard(this.data.id, this.checkoutForm.value)
-        .subscribe((res) => {
-          this.dialogRef.close(true);
-          this.card.getCards().subscribe(() => {
-            return this.data;
-          });
-        });
-    } else {
-      console.log('error');
-    }
+  getSuccess(message: string): void {
+    this.snackBar.createSnackBar('app-notification-success', message);
+    this.showSpinner = false;
+    this.dialogRef.close(true);
   }
-
-  // addCard(): void {
-  //   this.card.addCard(this.checkoutForm.value).subscribe((res: any) => {
-  //     console.log(this.checkoutForm.value);
-  //     // this._snackBar.open(res || 'Successfully added', '', {
-  //     //   duration: 4000,
-  //     // });
-  //     this._snackBar.open('Successfully added', '', {
-  //       duration: 4000,
-  //     });
-  //     this.dialogRef.close();
-  //   });
-  // }
+  getError(message: string): void {
+    this.snackBar.createSnackBar('app-notification-error', message);
+    this.showSpinner = false;
+  }
 }

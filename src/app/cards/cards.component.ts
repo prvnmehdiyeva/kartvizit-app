@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CardButtonComponent } from './card-button/card-button.component';
 import { CardService } from '../services/card.service';
 import { Card } from '../models/card';
+import { LocalserviceService } from '../services/localservice.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-cards',
@@ -11,11 +13,26 @@ import { Card } from '../models/card';
 })
 export class CardsComponent implements OnInit {
   longText: string = '';
-  cards!: Card[];
+  cards: Card[] = [];
 
-  constructor(public dialog: MatDialog, private cardService: CardService) {}
+  constructor(
+    public dialog: MatDialog,
+    public cardService: CardService,
+    private localService: LocalserviceService
+  ) {}
   ngOnInit() {
-    this.getCards();
+    // this.cardService.getAllCards().subscribe((cards) => {
+    //   this.cards = cards;
+    // });
+    this.cardService._refreshNeeded$.subscribe(() => {
+      this.getAllCards();
+    });
+    this.getAllCards();
+  }
+  private getAllCards() {
+    this.cardService.getAllCards().subscribe((cards: Card[]) => {
+      this.cards = cards;
+    });
   }
   openDialog() {
     const dialog = this.dialog.open(CardButtonComponent, {
@@ -23,14 +40,7 @@ export class CardsComponent implements OnInit {
     });
     dialog.afterClosed().subscribe((res) => {
       if (res) {
-        this.getCards();
       }
-    });
-  }
-  getCards() {
-    this.cardService.getCards().subscribe((res: Card[]) => {
-      this.cards = res;
-      console.log('Received cards:', this.cards);
     });
   }
 }
