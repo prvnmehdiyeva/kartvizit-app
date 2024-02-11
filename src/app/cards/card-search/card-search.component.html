@@ -1,0 +1,9 @@
+<mat-form-field class="example-full-width">
+  <mat-label>Search</mat-label>
+  <input
+    matInput
+    placeholder="Ex. name, title"
+    #searchText
+    (keyup)="search(searchText.value)"
+  />
+</mat-form-field>

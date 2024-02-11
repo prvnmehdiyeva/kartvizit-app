@@ -29,7 +29,7 @@ export class CardsComponent implements OnInit {
     });
     this.getAllCards();
   }
-  private getAllCards() {
+  public getAllCards() {
     this.cardService.getAllCards().subscribe((cards: Card[]) => {
       this.cards = cards;
     });

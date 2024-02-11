@@ -10,6 +10,7 @@ import { LocalserviceService } from './localservice.service';
 })
 export class CardService {
   public cards!: Card[];
+  public filteredCards!: Card[];
   private data: any;
   private jsonUrlKey = 'jsonUrl';
   public _refreshNeeded$ = new Subject<void>();
@@ -48,6 +49,7 @@ export class CardService {
   getAllCards(): Observable<Card[]> {
     const storedJsonUrl = this.getJsonUrlFromLocal();
     if (storedJsonUrl && Array.isArray(storedJsonUrl.Persons)) {
+      this.filteredCards = storedJsonUrl.Persons;
       return of(storedJsonUrl.Persons);
     } else {
       console.log(
