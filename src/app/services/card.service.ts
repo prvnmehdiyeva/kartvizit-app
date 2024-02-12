@@ -49,6 +49,7 @@ export class CardService {
   getAllCards(): Observable<Card[]> {
     const storedJsonUrl = this.getJsonUrlFromLocal();
     if (storedJsonUrl && Array.isArray(storedJsonUrl.Persons)) {
+      this.cards = storedJsonUrl.Persons;
       this.filteredCards = storedJsonUrl.Persons;
       return of(storedJsonUrl.Persons);
     } else {

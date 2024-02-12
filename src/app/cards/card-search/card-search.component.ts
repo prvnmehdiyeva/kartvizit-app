@@ -9,14 +9,19 @@ import { CardsComponent } from '../cards.component';
   styleUrl: './card-search.component.scss',
 })
 export class CardSearchComponent {
-  constructor(private card: CardService, private cards: CardsComponent) {}
+  constructor(
+    private cardService: CardService,
+    private cards: CardsComponent
+  ) {}
 
   search(searchText: string): void {
     searchText = searchText.toLowerCase();
-    console.log('🚀 ~ CardSearchComponent ~ search ~  searchText:', searchText);
 
-    this.card.filteredCards = this.cards.cards.filter((card: Card) => {
-      return card.title.toLowerCase().includes(searchText);
+    this.cardService.filteredCards = this.cardService.cards.filter((card) => {
+      return (
+        card.title.toLowerCase().indexOf(searchText) > -1 ||
+        (card.name && card.name.toLowerCase().indexOf(searchText) > -1)
+      );
     });
   }
 }
