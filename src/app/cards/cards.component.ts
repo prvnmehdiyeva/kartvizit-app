@@ -21,9 +21,6 @@ export class CardsComponent implements OnInit {
     private localService: LocalserviceService
   ) {}
   ngOnInit() {
-    // this.cardService.getAllCards().subscribe((cards) => {
-    //   this.cards = cards;
-    // });
     this.cardService._refreshNeeded$.subscribe(() => {
       this.getAllCards();
     });

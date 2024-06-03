@@ -32,13 +32,13 @@ export class CardButtonComponent implements OnInit {
     this.checkoutForm = this.formBuilder.group({
       id: this.idCounter++,
       name: [this.data?.name, [Validators.required, Validators.maxLength(225)]],
-      address: [this.data?.address, [Validators.maxLength(225)]],
-      title: [this.data?.title, [Validators.maxLength(20)]],
+      address: [this.data?.address, [Validators.maxLength(25)]],
+      title: [this.data?.title, [Validators.required,Validators.maxLength(20)]],
       phone: [
         this.data?.phone,
         [Validators.required, Validators.maxLength(20)],
       ],
-      email: [this.data?.email, [Validators.email, Validators.maxLength(20)]],
+      email: [this.data?.email, [Validators.email]],
     });
   }
 

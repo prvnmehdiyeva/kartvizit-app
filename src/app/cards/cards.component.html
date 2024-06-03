@@ -12,22 +12,12 @@
       color="primary"
       (click)="openDialog()"
     >
-      Primary
+      New Card
     </button>
   </div>
   <hr />
   <div class="cards">
     <div class="row">
-      <!-- <div class="col-12" *ngIf="!cardService.cards">
-        <span>Cards downloading... Please, wait a sec.</span>
-      </div>
-      <div class="col-12" *ngIf="cardService.cards?.length === 0">
-        <span
-          >You do not add any visit yet
-          <a class="text-primary" (click)="openDialog()">Click here!</a> you can
-          create new card right away
-        </span>
-      </div> -->
       <div
         class="col-12 col-md-4 col-lg-3"
         *ngFor="let card of cardService.filteredCards"

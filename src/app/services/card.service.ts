@@ -53,9 +53,7 @@ export class CardService {
       this.filteredCards = storedJsonUrl.Persons;
       return of(storedJsonUrl.Persons);
     } else {
-      console.log(
-        'No cards found in local storage or data is not in the expected format'
-      );
+      console.log('No cards found');
       return of([]);
     }
   }
@@ -65,11 +63,9 @@ export class CardService {
 
     storedCards.push(newCard);
 
-    const updatedCards = [...storedCards];
     this.localService.setItem(this.jsonUrlKey, { Persons: storedCards });
 
     this.cards = storedCards;
-    // this.cards = updatedCards;
 
     // window.location.reload();
     return of(storedCards).pipe(
@@ -90,7 +86,6 @@ export class CardService {
     } else {
       console.log(`Card with id ${cardId} not found.`);
     }
-    // window.location.reload();
     return of(storedCards).pipe(
       tap(() => {
         this._refreshNeeded$.next();
@@ -111,7 +106,6 @@ export class CardService {
     } else {
       console.log(`Card with id ${updatedId} not found.`);
     }
-    // window.location.reload();
     return of(storedCards).pipe(
       tap(() => {
         this._refreshNeeded$.next();
